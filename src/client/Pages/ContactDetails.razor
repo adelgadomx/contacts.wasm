@@ -1,0 +1,96 @@
+@page "/contactdetails/{id:int?}"
+
+@using Services
+@using shared
+@inject NavigationManager _nm
+
+@inject IContactService ContactService
+
+@Message
+
+<EditForm Model="contact" OnValidSubmit="Save">
+    <div class="card">
+        <h5 class="card-header">Contact Details</h5>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="">First Name</label>
+                        <InputText class="form-control" @bind-Value="@contact.FirstName"></InputText>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="">Last Name</label>
+                        <InputText class="form-control" @bind-Value="@contact.LastName"></InputText>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="">Phone</label>
+                        <InputText class="form-control" @bind-Value="@contact.Phone"></InputText>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="">Addres</label>
+                        <InputText class="form-control" @bind-Value="@contact.Address"></InputText>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Save" />
+                        @if (@Id is not null && @Id != 0)
+                        {
+                            <input type="button" class="btn btn-danger btn-sm" value="Delete" @onclick="Delete" />
+                        }
+                        <input type="button" class="btn btn-secondary btn-sm" value="Cancel" @onclick="Quit" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code
+{
+    [Parameter]
+    public int? Id { get; set; }
+    private Contact contact;
+    private string? Message;
+
+    protected override void OnParametersSet()
+    {
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        // Id = Id ?? 0;
+        Message = $"id value {Id}";
+        if (Id is null)
+            contact = new Contact();
+        else
+            contact = await ContactService.GetDetails((Id ?? 0));
+    }
+
+    protected async Task Save()
+    {
+        await ContactService.SaveContact(contact);
+        Quit();
+    }
+
+    protected async Task Delete()
+    {
+        await ContactService.DeleteContact((Id ?? 0));
+        Quit();
+    }
+
+    private void Quit()
+    {
+        _nm.NavigateTo("/");
+    }
+
+}

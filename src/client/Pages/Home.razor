@@ -1,7 +1,61 @@
 ﻿@page "/"
+@using shared
+@using Services;
 
-<PageTitle>Home</PageTitle>
+@inject IContactService ContactService
+@inject NavigationManager NavigationManager
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<PageTitle>Contacts</PageTitle>
+@Message
+<a href="/contactdetails">Add Contact</a>
+@if (@contacts == null)
+{
+    <p><em>Cargando ... </em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Addres</th>
+                <th>Phone</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in contacts)
+            {
+                <tr>
+                    <td>@contact.FullName</td>
+                    <td>@contact.Address</td>
+                    <td>@contact.Phone</td>
+                    <td><a href=@($"/contactdetails/{contact.Id}")>Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    IEnumerable<Contact>? contacts;
+
+    public string? Message { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            contacts = await ContactService.Getall();
+
+        }
+        catch (Exception e)
+        {
+            Message = "Error:" + e;
+        }
+    }
+
+
+}
