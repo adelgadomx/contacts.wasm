@@ -15,27 +15,48 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Addres</th>
-                <th>Phone</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var contact in contacts)
-            {
-                <tr>
-                    <td>@contact.FullName</td>
-                    <td>@contact.Address</td>
-                    <td>@contact.Phone</td>
-                    <td><a href=@($"/contactdetails/{contact.Id}")>Edit</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false"
+        FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
+        PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" Data="@contacts" TItem="Contact"
+        ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="Contact" Property="FullName" Filterable="true" Title="Full Name" Frozen="true"
+                Width="80px" TextAlign="TextAlign.Left" />
+            <RadzenDataGridColumn TItem="Contact" Property="Phone" Filterable="true" Title="Phone" Frozen="true"
+                Width="40px" TextAlign="TextAlign.Left" />
+            <RadzenDataGridColumn TItem="Contact" Property="Address" Filterable="true" Title="Addres" Frozen="true"
+                Width="80px" TextAlign="TextAlign.Left" />
+
+            <RadzenDataGridColumn TItem="Contact" Width="15px">
+                <Template Context="data">
+                    <RadzenLink Path="@($"/contactdetails/{data.Id}")">Edit</RadzenLink>
+                </Template>
+            </RadzenDataGridColumn>
+
+
+        </Columns>
+    </RadzenDataGrid>
+    @* <RadzenGrid AllowFiltering="true"
+FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+AllowPaging="true"
+FilterMode="FilterMode.Advanced"
+PageSize="4"
+AllowSorting="true"
+TItem="Contact"
+Data="@contacts"
+ColumnWidth="200px"
+>
+<Columns>
+<RadzenGridColumn TItem="Contact" Property="FullName" Title="Name"></RadzenGridColumn>
+<RadzenGridColumn TItem="Contact" Property="Phone" Title="Phone"></RadzenGridColumn>
+<RadzenGridColumn TItem="Contact" Property="Address" Title="Address"></RadzenGridColumn>
+<RadzenGridColumn TItem="Contact" Title="Edit">
+<Template Context="data">
+<RadzenLink Path="@($"/contactdetails/{data.Id}")">Edit</RadzenLink>
+</Template>
+</RadzenGridColumn>
+</Columns>
+</RadzenGrid> *@
 }
 
 @code {
